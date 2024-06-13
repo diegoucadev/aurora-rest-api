@@ -6,6 +6,6 @@ import { validateToken } from "../middleware/validateToken.js"
 const userRouter = Router()
 
 userRouter.post('/login', userController.login)
-userRouter.get('/login', validateToken, userController.test)
+userRouter.post('/register', userController.register)
 
 export default userRouter
