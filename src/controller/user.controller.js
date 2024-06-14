@@ -8,14 +8,27 @@ import bcrypt from 'bcrypt'
 
 export async function login(req, res) {
     const username = req.body.username
+    const password = req.body.password
     const user = await User.findOne({ username: username })
-    if(user == null) {
+    if (user == null) {
+        //Return an error if no matches are found
         res.status(500).json({'error': 'User not found'})
-    } 
-    else {
-        const userCreds = { username: user.username }
-        const accessToken = jwt.sign(userCreds, process.env.ACCESS_TOKEN_SECRET)
-        res.status(200).json({ acessToken: accessToken })
+    }
+    try {
+        const match = await bcrypt.compare(password, user.password)
+        if(match) {
+            const userForToken = { 
+                _id: user._id,
+                username: user.username,
+                email: user.email
+            }
+            const accessToken = jwt.sign(userForToken, process.env.ACCESS_TOKEN_SECRET)
+            res.status(200).json({ acessToken: accessToken })
+        } else {
+            res.status(401).json({ 'error': 'Incorrect username or password' })
+        }
+    } catch(err) {
+        res.status(500).json({ 'error': 'Something went wrong...' })
     }
 }
 
@@ -33,9 +46,16 @@ export async function register(req, res) {
         rating: 0,
         isActive: true
     })
+    //This user object will only be used to create a token
+    const userForToken = { 
+        _id: user._id,
+        username: user.username,
+        email: user.email
+    }
     try {
         await user.save()
-        res.status(200).json({'ok': 'user registered'})
+        const accessToken = jwt.sign(userForToken, process.env.ACCESS_TOKEN_SECRET)
+        res.status(200).json({'ok': 'user registered', 'token': accessToken})
     } catch(err) {
         res.status(500).json(err)
     }
