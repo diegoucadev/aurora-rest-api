@@ -26,7 +26,7 @@ export async function login(req, res) {
             const accessToken = jwt.sign(userForToken, process.env.ACCESS_TOKEN_SECRET)
             res.status(200).json({ acessToken: accessToken })
         } else {
-            //If the password don't match, deny the access
+            //If the password doesn't match, deny the access
             throw new InvalidCredentialsError("Credenciales de inicio de sesion invalidas")
         }
     } catch(err) {
@@ -51,7 +51,8 @@ export async function register(req, res) {
         password: hashedPassword,
         email: req.body.email,
         rating: 0,
-        isActive: true
+        isActive: true,
+        isAdmin: false
     })
     //This user object will only be used to create a token
     const userForToken = { 
