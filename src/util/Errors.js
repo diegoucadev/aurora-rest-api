@@ -32,3 +32,10 @@ export class AccessDeniedError extends Error {
         this.name = "AccessDeniedError"
     }
 }
+
+export class EmailTakenError extends Error {
+    constructor(message) {
+        super(message)
+        this.name = "EmailTakenError"
+    }
+}
