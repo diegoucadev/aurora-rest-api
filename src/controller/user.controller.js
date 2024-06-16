@@ -36,14 +36,13 @@ export async function login(req, res) {
 }
 
 export async function register(req, res) {
-    const { firstName, lastName, username, password, email } = req.body
+    const { name, username, password, email } = req.body
     //Encrypt the password
     const salt = await bcrypt.genSalt()
     const hashedPassword = await bcrypt.hash(password, salt)
     //Create a user model to save in the database
     const user = new User({
-        firstName: firstName,
-        lastName: lastName,
+        name: name,
         username: username,
         password: hashedPassword,
         email: email,
@@ -72,7 +71,7 @@ export async function getAllUsers(req, res) {
     try {
         const allUsers = await User.find()
         res.status(200).json(allUsers)
-    } catch(err) {
+    } catch (err) {
         res.json(500).json(err.message)
     }
 }
@@ -81,12 +80,16 @@ export async function getUserByUsername(req, res) {
     try {
         const { username } = req.params
         const user = await User.findOne({ username })
-        if(user == null) {
+        if (user == null) {
             throw new InvalidUsername("no user with that username was found")
         } else {
             res.status(200).json(user)
         }
-    } catch(err) {
+    } catch (err) {
         res.status(400).json(err.message)
     }
+}
+
+export async function updatePersonalInformation(req, res) {
+    
 }
