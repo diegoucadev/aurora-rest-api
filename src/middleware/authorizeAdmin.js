@@ -16,6 +16,6 @@ export async function authorizeAdmin(req, res, next) {
             throw new AccessDeniedError("User is not admin")
         }
     } catch(err) {
-        res.status(400).json(err.message)
+        return res.status(400).json(err.message)
     }
 }

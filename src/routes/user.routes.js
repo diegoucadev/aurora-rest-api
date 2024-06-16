@@ -6,9 +6,10 @@ import { handleLoginErrors } from '../middleware/handleLoginErrors.js'
 
 const userRouter = Router()
 
+userRouter.get('/', validateToken, authorizeAdmin, userController.getAllUsers)
+userRouter.get('/:username', validateToken, authorizeAdmin, userController.getUserByUsername)
+
 userRouter.post('/login', handleLoginErrors, userController.login)
 userRouter.post('/register', userController.register)
-
-userRouter.get('/users', validateToken, authorizeAdmin, userController.getAllUsers)
 
 export default userRouter

@@ -5,7 +5,7 @@
 import jwt from 'jsonwebtoken'
 import User from '../model/user.model.js'
 import bcrypt from 'bcrypt'
-import { AccessDeniedError, InvalidCredentialsError } from '../util/Errors.js'
+import { InvalidCredentialsError, InvalidUsername } from '../util/Errors.js'
 
 export async function login(req, res) {
     /*
@@ -74,5 +74,19 @@ export async function getAllUsers(req, res) {
         res.status(200).json(allUsers)
     } catch(err) {
         res.json(500).json(err.message)
+    }
+}
+
+export async function getUserByUsername(req, res) {
+    try {
+        const { username } = req.params
+        const user = await User.findOne({ username })
+        if(user == null) {
+            throw new InvalidUsername("no user with that username was found")
+        } else {
+            res.status(200).json(user)
+        }
+    } catch(err) {
+        res.status(400).json(err.message)
     }
 }
