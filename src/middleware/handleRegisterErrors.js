@@ -18,6 +18,7 @@ export async function handleRegisterErrors(req, res, next) {
             next()
         }
     } catch(err) {
-        return res.status(400).json(err.message)
+        res.status(400).json(err.message)
+        return
     }
 }

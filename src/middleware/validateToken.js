@@ -10,7 +10,8 @@ export function validateToken(req, res, next) {
     const token = authHeader && authHeader.split(' ')[1]
     //If no token is provided, deny the access
     if(token == null) {
-        return res.status(401).json({ 'error': 'No token provided' })
+        res.status(401).json({ 'error': 'No token provided' })
+        return
     }
     //If the token was tampered, deny the access
     jwt.verify(token, SECRET, (err, decoded) => {

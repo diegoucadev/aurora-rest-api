@@ -22,6 +22,7 @@ export async function handleLoginErrors(req, res, next) {
         req.body.user = user
         next()
     } catch (err) {
-        return res.status(400).json(err.message)
+        res.status(400).json(err.message)
+        return
     }
 }
