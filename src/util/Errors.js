@@ -39,3 +39,10 @@ export class EmailTakenError extends Error {
         this.name = "EmailTakenError"
     }
 }
+
+export class UserAlreadyBannedError extends Error {
+    constructor(message) {
+        super(message) 
+        this.name = "UserAlreadyBannedError"
+    }
+}
