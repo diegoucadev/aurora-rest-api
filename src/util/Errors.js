@@ -46,3 +46,10 @@ export class UserAlreadyBannedError extends Error {
         this.name = "UserAlreadyBannedError"
     }
 }
+
+export class userNotBannedError extends Error {
+    constructor(message) {
+        super(message)
+        this.name = "userNotBannedError"
+    }
+}

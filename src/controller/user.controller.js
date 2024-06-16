@@ -5,7 +5,7 @@
 import jwt from 'jsonwebtoken'
 import User from '../model/user.model.js'
 import bcrypt from 'bcrypt'
-import { EmailTakenError, InvalidCredentialsError, InvalidUsername, UserAlreadyBannedError, UserNotFoundError } from '../util/Errors.js'
+import { EmailTakenError, InvalidCredentialsError, InvalidUsername, UserAlreadyBannedError, UserNotFoundError, userNotBannedError } from '../util/Errors.js'
 
 export async function login(req, res) {
     /*
@@ -168,4 +168,18 @@ export async function banUser(req, res) {
     } catch(err) {
         res.status(400).json(err.message)
     }
+}
+
+export async function unbanUser(req, res) {
+    const { username } = req.params
+    try {
+        const user = await User.findOne({ username })
+        if (user.isActive) {
+            throw new userNotBannedError("The user is not banned")
+        } else {
+            await User.findOneAndUpdate({ username }, { isActive: true })
+        }
+    } catch(err) { 
+        res.status(400).json(err.message)
+    }   
 }

@@ -17,5 +17,6 @@ userRouter.put('/name/:username', validateToken, userController.updateName)
 userRouter.post('/login', handleLoginErrors, userController.login)
 userRouter.post('/register', userController.register)
 userRouter.post('/ban/:username', validateToken, authorizeAdmin, userController.banUser)
+userRouter.post('/unban/:username', validateToken, authorizeAdmin, userController.unbanUser)
 
 export default userRouter
