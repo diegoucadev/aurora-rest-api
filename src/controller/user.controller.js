@@ -183,3 +183,17 @@ export async function unbanUser(req, res) {
         res.status(400).json(err.message)
     }   
 }
+
+export async function deleteUser(req, res) {
+    const { username } = req.params
+    try {
+        const user = await User.findOne({ username })
+        if(user) {
+            throw new UserNotFoundError("User not found")
+        } else {
+            await User.findOneAndDelete({ username })
+        }
+    } catch(err) {
+        res.status(400).json(err.message)
+    }
+}
