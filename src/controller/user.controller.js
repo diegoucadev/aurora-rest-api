@@ -178,6 +178,7 @@ export async function unbanUser(req, res) {
             throw new userNotBannedError("The user is not banned")
         } else {
             await User.findOneAndUpdate({ username }, { isActive: true })
+            res.status(200).json({ 'Ok': 'User unbanned' })
         }
     } catch(err) { 
         res.status(400).json(err.message)
@@ -188,10 +189,11 @@ export async function deleteUser(req, res) {
     const { username } = req.params
     try {
         const user = await User.findOne({ username })
-        if(user) {
+        if(!user) {
             throw new UserNotFoundError("User not found")
         } else {
             await User.findOneAndDelete({ username })
+            res.status(200).json({ "Ok": "User deleted" })
         }
     } catch(err) {
         res.status(400).json(err.message)
