@@ -24,4 +24,4 @@ const bookSchema = mongoose.Schema({
     price: Number
 })
 
-export default mongoose.model('Book', bookSchema)
+export default bookSchema

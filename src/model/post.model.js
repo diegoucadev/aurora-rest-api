@@ -1,19 +1,21 @@
 import mongoose from "mongoose"
-
+import bookSchema from "./book.model"
 
 const postSchema = mongoose.Schema({
     datePublished: String, 
     publishedBy: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
+        ref: 'users',
         required: true
     },
     book: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Book',
+        type: bookSchema,
         required: true
     },
-    //imageUrl: 
+    image: {
+        publicId: String,
+        url: String
+    }
 
 })
 
