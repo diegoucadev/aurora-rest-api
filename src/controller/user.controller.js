@@ -145,8 +145,18 @@ export async function updateEmail(req, res) {
         if (isEmailTaken) {
             throw new EmailTakenError("The email is already taken")
         }
-        await User.findOneAndUpdate({ username }, { email: newEmail })
-        res.status(200).json({ 'Ok': 'Email updated' })
+        const updatedUser = await User.findOneAndUpdate({ username }, { email: newEmail }, { new: true })
+        const userForToken = {
+            _id: updatedUser._id,
+            username: updatedUser.username,
+            email: updatedUser.email,
+            isAdmin: updatedUser.isAdmin
+        }
+        const accessToken = jwt.sign(userForToken, process.env.ACCESS_TOKEN_SECRET);
+        res.status(200).json({
+            'Ok': 'Email updated',
+            "newAccessToken": accessToken
+        })
     } catch (err) {
         res.status(400).json(err.message)
     }
