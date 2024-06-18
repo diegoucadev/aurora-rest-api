@@ -91,7 +91,7 @@ export async function getUserByUsername(req, res) {
 }
 
 export async function updatePassword(req, res) {
-    const { username } = req.params
+    const { username } = req.payload
     const { currentPassword, newPassword } = req.body
     try {
         const user = await User.findOne({ username })
@@ -113,15 +113,26 @@ export async function updatePassword(req, res) {
 }
 
 export async function updateUsername(req, res) {
-    const { username } = req.params
-    const givenUsername = req.body.username
+    const { username } = req.payload
+    const newUsername = req.body.newUsername
     try {
-        const isUsernameTaken = await User.findOne({ username: givenUsername })
+        const isUsernameTaken = await User.findOne({ username: newUsername })
         if (isUsernameTaken) {
             throw new InvalidUsername("The username is already taken")
         } else {
-            await User.findOneAndUpdate({ username: givenUsername })
-            res.status(200).json({ 'Ok': 'Username updated' })
+            const updatedUser = await User.findOneAndUpdate({ username }, { username: newUsername })
+            const userForToken = {
+                _id: updatedUser._id,
+                username: updatedUser.username,
+                email: updatedUser.email,
+                isAdmin: updatedUser.isAdmin
+            }
+
+            const accessToken = jwt.sign(userForToken, process.env.ACCESS_TOKEN_SECRET);
+            res.status(200).json({ 
+                'Ok': 'Username updated',
+                "newAccessToken": accessToken
+             })
         }
     } catch (err) {
         res.status(400).json(err.message)
@@ -129,14 +140,14 @@ export async function updateUsername(req, res) {
 }
 
 export async function updateEmail(req, res) {
-    const { username } = req.params
-    const { email } = req.body
+    const { username } = req.payload
+    const { newEmail } = req.body
     try {
-        const isEmailTaken = await User.findOne({ email })
+        const isEmailTaken = await User.findOne({ email: newEmail })
         if (isEmailTaken) {
             throw new EmailTakenError("The email is already taken")
         } else {
-            await User.findOneAndUpdate({ username }, { email })
+            await User.findOneAndUpdate({ username }, { email: newEmail })
             res.status(200).json({ 'Ok': 'Email updated' })
         }
     } catch (err) {
@@ -145,10 +156,10 @@ export async function updateEmail(req, res) {
 }
 
 export async function updateName(req, res) {
-    const { username } = req.params
-    const { name } = req.body
+    const { username } = req.payload
+    const { newName } = req.body
     try {
-        await User.findOneAndUpdate({ username }, { name })
+        await User.findOneAndUpdate({ username }, { name: newName })
         res.status(200).json({ 'Ok': 'Name updated' })
     } catch (err) {
         res.status(500).json(err.message)
