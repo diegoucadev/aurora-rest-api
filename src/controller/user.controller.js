@@ -10,9 +10,9 @@ import { EmailTakenError, InvalidCredentialsError, InvalidUsername, UserAlreadyB
 export async function login(req, res) {
     /*
     The user from req.body is the user from the database
-    it constains a password, the password that is being
+    it contains a password, the password that is being
     extracted is the password entered by the user that will be
-    validated
+    validated, the user was set on the handleLoginErrors middleware
     */
     const { user, password } = req.body
     try {
@@ -82,9 +82,8 @@ export async function getUserByUsername(req, res) {
         const user = await User.findOne({ username })
         if (user == null) {
             throw new InvalidUsername("no user with that username was found")
-        } else {
-            res.status(200).json(user)
-        }
+        } 
+        res.status(200).json(user)
     } catch (err) {
         res.status(400).json(err.message)
     }
@@ -119,21 +118,20 @@ export async function updateUsername(req, res) {
         const isUsernameTaken = await User.findOne({ username: newUsername })
         if (isUsernameTaken) {
             throw new InvalidUsername("The username is already taken")
-        } else {
-            const updatedUser = await User.findOneAndUpdate({ username }, { username: newUsername })
-            const userForToken = {
-                _id: updatedUser._id,
-                username: updatedUser.username,
-                email: updatedUser.email,
-                isAdmin: updatedUser.isAdmin
-            }
-
-            const accessToken = jwt.sign(userForToken, process.env.ACCESS_TOKEN_SECRET);
-            res.status(200).json({ 
-                'Ok': 'Username updated',
-                "newAccessToken": accessToken
-             })
         }
+        const updatedUser = await User.findOneAndUpdate({ username }, { username: newUsername }, { new: true })
+        const userForToken = {
+            _id: updatedUser._id,
+            username: updatedUser.username,
+            email: updatedUser.email,
+            isAdmin: updatedUser.isAdmin
+        }
+
+        const accessToken = jwt.sign(userForToken, process.env.ACCESS_TOKEN_SECRET);
+        res.status(200).json({
+            'Ok': 'Username updated',
+            "newAccessToken": accessToken
+        })
     } catch (err) {
         res.status(400).json(err.message)
     }
@@ -146,10 +144,9 @@ export async function updateEmail(req, res) {
         const isEmailTaken = await User.findOne({ email: newEmail })
         if (isEmailTaken) {
             throw new EmailTakenError("The email is already taken")
-        } else {
-            await User.findOneAndUpdate({ username }, { email: newEmail })
-            res.status(200).json({ 'Ok': 'Email updated' })
         }
+        await User.findOneAndUpdate({ username }, { email: newEmail })
+        res.status(200).json({ 'Ok': 'Email updated' })
     } catch (err) {
         res.status(400).json(err.message)
     }
@@ -170,13 +167,12 @@ export async function banUser(req, res) {
     const { username } = req.params
     try {
         const user = await User.find({ username })
-        if(!user.isActive) {
+        if (!user.isActive) {
             throw new UserAlreadyBannedError("The user is already banned")
-        } else {
-            await User.findOneAndUpdate({ username }, { isActive: false })
-            res.status(200).json({ 'Ok': 'User banned' })
         }
-    } catch(err) {
+        await User.findOneAndUpdate({ username }, { isActive: false })
+        res.status(200).json({ 'Ok': 'User banned' })
+    } catch (err) {
         res.status(400).json(err.message)
     }
 }
@@ -187,26 +183,24 @@ export async function unbanUser(req, res) {
         const user = await User.findOne({ username })
         if (user.isActive) {
             throw new userNotBannedError("The user is not banned")
-        } else {
-            await User.findOneAndUpdate({ username }, { isActive: true })
-            res.status(200).json({ 'Ok': 'User unbanned' })
         }
-    } catch(err) { 
+        await User.findOneAndUpdate({ username }, { isActive: true })
+        res.status(200).json({ 'Ok': 'User unbanned' })
+    } catch (err) {
         res.status(400).json(err.message)
-    }   
+    }
 }
 
 export async function deleteUser(req, res) {
     const { username } = req.params
     try {
         const user = await User.findOne({ username })
-        if(!user) {
+        if (!user) {
             throw new UserNotFoundError("User not found")
-        } else {
-            await User.findOneAndDelete({ username })
-            res.status(200).json({ "Ok": "User deleted" })
         }
-    } catch(err) {
+        await User.findOneAndDelete({ username })
+        res.status(200).json({ "Ok": "User deleted" })
+    } catch (err) {
         res.status(400).json(err.message)
     }
 }
