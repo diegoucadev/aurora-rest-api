@@ -13,6 +13,9 @@ userRouter.put('/password', validateToken, userController.updatePassword)
 userRouter.put('/email', validateToken, userController.updateEmail)
 userRouter.put('/username', validateToken, userController.updateUsername)
 userRouter.put('/name', validateToken, userController.updateName)
+userRouter.put('/phoneNumber', validateToken, userController.updatePhoneNumber)
+userRouter.put('/whatsapp', validateToken, userController.updateWhatsappProfileLink)
+
 
 userRouter.post('/login', handleLoginErrors, userController.login)
 userRouter.post('/register', userController.register)

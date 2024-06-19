@@ -19,6 +19,7 @@ const userSchema = new mongoose.Schema({
         unique: true,
         required: true
     },
+    //Whatsapp contains the user's whatsapp prof link
     contact: {
         phoneNumber: String,
         whatsapp: String,

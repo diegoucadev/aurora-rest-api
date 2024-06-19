@@ -37,6 +37,7 @@ export async function login(req, res) {
 
 export async function register(req, res) {
     const { name, username, password, email } = req.body
+    const { phoneNumber, whatsapp, facebook, twitter } = req.body
     //Encrypt the password
     const salt = await bcrypt.genSalt()
     const hashedPassword = await bcrypt.hash(password, salt)
@@ -47,6 +48,12 @@ export async function register(req, res) {
         password: hashedPassword,
         email: email,
         rating: 0,
+        contact: {
+            phoneNumber: phoneNumber,
+            whatsapp: whatsapp,
+            facebook: facebook,
+            twitter: twitter
+        },
         isActive: true,
         isAdmin: false
     })
@@ -82,7 +89,7 @@ export async function getUserByUsername(req, res) {
         const user = await User.findOne({ username })
         if (user == null) {
             throw new InvalidUsername("no user with that username was found")
-        } 
+        }
         res.status(200).json(user)
     } catch (err) {
         res.status(400).json(err.message)
@@ -184,6 +191,62 @@ export async function banUser(req, res) {
         res.status(200).json({ 'Ok': 'User banned' })
     } catch (err) {
         res.status(400).json(err.message)
+    }
+}
+
+export async function updatePhoneNumber(req, res) {
+    const { username } = req.payload
+    const { phoneNumber } = req.phoneNumber
+    try {
+        const updatedUser = await User.findOneAndUpdate(
+            { username },
+            { 'contact.phoneNumber': phoneNumber }
+        )
+        res.status(200).json({ 'OK': 'Phone number updated' })
+    } catch (err) {
+        res.status(500).json(err.message)
+    }
+}
+
+export async function updateWhatsappProfileLink(req, res) {
+    const { username } = req.payload
+    const { whatsapp } = req.whatsapp
+    try {
+        const updatedUser = await User.findOneAndUpdate(
+            { username },
+            { 'contact.whatsapp': whatsapp }
+        )
+        res.status(200).json({ 'OK': 'Whatsapp profile link updated' })
+    } catch (err) {
+        res.status(500).json(err.message)
+    }
+}
+
+export async function updateFacebookProfileLink(req, res) {
+    const { username } = req.payload
+    const { facebook } = req.facebook
+    try {
+        const updatedUser = await User.findOneAndUpdate(
+            { username },
+            { 'contact.facebook': facebook }
+        )
+        res.status(200).json({ 'OK': 'Facebook profile link updated' })
+    } catch (err) {
+        res.status(500).json(err.message)
+    }
+}
+
+export async function updateTwitterProfileLink(req, res) {
+    const { username } = req.payload
+    const { twitter } = req.twitter
+    try {
+        const updatedUser = await User.findOneAndUpdate(
+            { username },
+            { 'contact.twitter': twitter }
+        )
+        res.status(200).json({ 'OK': 'Twitter profile link updated' })
+    } catch (err) {
+        res.status(500).json(err.message)
     }
 }
 
