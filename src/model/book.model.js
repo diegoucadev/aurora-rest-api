@@ -17,7 +17,7 @@ const bookSchema = mongoose.Schema({
     synopsis: String,
     genre: String,
     yearPublished: String,
-    pages: Number,
+    pages: String,
     isbn: String,
     publisher: String,
     language: String,

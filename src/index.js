@@ -8,12 +8,12 @@ import fileUpload from 'express-fileupload'
 const app = express()
 
 app.use(express.json())
-app.use('/users', userRouter)
-app.use('/posts', postRouter)
 app.use(fileUpload({
     useTempFiles: true,
     tempFileDir: './uploads' 
 }))
+app.use('/users', userRouter)
+app.use('/posts', postRouter)
 
 app.listen(3000)
 
