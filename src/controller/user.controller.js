@@ -196,11 +196,11 @@ export async function banUser(req, res) {
 
 export async function updatePhoneNumber(req, res) {
     const { username } = req.payload
-    const { phoneNumber } = req.phoneNumber
+    const { phoneNumber } = req.body
     try {
         const updatedUser = await User.findOneAndUpdate(
             { username },
-            { 'contact.phoneNumber': phoneNumber }
+            { $set: { 'contact.phoneNumber': phoneNumber } }
         )
         res.status(200).json({ 'OK': 'Phone number updated' })
     } catch (err) {
@@ -210,11 +210,11 @@ export async function updatePhoneNumber(req, res) {
 
 export async function updateWhatsappProfileLink(req, res) {
     const { username } = req.payload
-    const { whatsapp } = req.whatsapp
+    const { whatsapp } = req.body
     try {
         const updatedUser = await User.findOneAndUpdate(
             { username },
-            { 'contact.whatsapp': whatsapp }
+            { $set: { 'contact.whatsapp': whatsapp } }
         )
         res.status(200).json({ 'OK': 'Whatsapp profile link updated' })
     } catch (err) {
@@ -224,11 +224,11 @@ export async function updateWhatsappProfileLink(req, res) {
 
 export async function updateFacebookProfileLink(req, res) {
     const { username } = req.payload
-    const { facebook } = req.facebook
+    const { facebook } = req.body
     try {
         const updatedUser = await User.findOneAndUpdate(
             { username },
-            { 'contact.facebook': facebook }
+            { $set: { 'contact.facebook': facebook } }
         )
         res.status(200).json({ 'OK': 'Facebook profile link updated' })
     } catch (err) {
@@ -238,11 +238,11 @@ export async function updateFacebookProfileLink(req, res) {
 
 export async function updateTwitterProfileLink(req, res) {
     const { username } = req.payload
-    const { twitter } = req.twitter
+    const { twitter } = req.body
     try {
         const updatedUser = await User.findOneAndUpdate(
             { username },
-            { 'contact.twitter': twitter }
+            { $set: { 'contact.twitter': twitter } }
         )
         res.status(200).json({ 'OK': 'Twitter profile link updated' })
     } catch (err) {
