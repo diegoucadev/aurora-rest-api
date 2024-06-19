@@ -2,7 +2,6 @@ import { uploadImage } from '../util/cloudinary.js'
 import { createPostData } from '../helpers/postHelpers.js'
 import Post from '../model/post.model.js'
 
-
 /**
  * @param {import('express').Request} req
  * @param {import('express').Response} res

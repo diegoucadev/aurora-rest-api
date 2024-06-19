@@ -1,7 +1,7 @@
 import mongoose from "mongoose"
 import bookSchema from "./book.model.js"
 
-const postSchema = mongoose.Schema({
+const postSchema = new mongoose.Schema({
     datePublished: String, 
     publishedBy: {
         type: mongoose.Schema.Types.ObjectId,
@@ -22,6 +22,5 @@ const postSchema = mongoose.Schema({
     }
 
 })
-
 
 export default mongoose.model('Post', postSchema)
