@@ -1,5 +1,5 @@
-import Post from '../model/post.model.js'
 import { uploadImage } from '../util/cloudinary.js'
+import { createPostData } from '../helpers/postHelpers.js'
 
 /**
  * @param {import('express').Request} req
@@ -9,34 +9,19 @@ import { uploadImage } from '../util/cloudinary.js'
 export async function newPost(req, res) {
     const { _id } = req.payload
 
-    const bookDetails = {
-        title: req.body.title,
-        author: req.body.author,
-        condition: req.body.condition,
-        synopsis: req.body.synopsis,
-        genre: req.body.genre,
-        yearPublished: req.body.yearPublished,
-        pages: req.body.pages,
-        isbn: req.body.isbn,
-        publisher: req.body.publisher,
-        language: req.body.language,
-        price: req.body.price
-    }
+    const post = createPostData(_id, req.body)
 
-    const post = new Post({
-        datePublished: req.body.datePublished,
-        publishedBy: _id,
-        book: bookDetails
-    })
-
-    if (req.files?.image) {
-        const upload = await uploadImage(req.files.image.tempFilePath)
-        post.image = {
-            publicId: upload.public_id,
-            url: upload.secure_url
+    try {
+        if (req.files?.image) {
+            const upload = await uploadImage(req.files.image.tempFilePath)
+            post.image = {
+                publicId: upload.public_id,
+                url: upload.secure_url
+            }
         }
+        const savedPost = await post.save()
+        res.json({ "OK": "Post saved", "post": savedPost })
+    } catch(err) {
+        res.status(400).json(err.message)
     }
-
-    const saved = await post.save()
-    res.json(saved)
 }
