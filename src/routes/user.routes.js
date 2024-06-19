@@ -13,6 +13,11 @@ userRouter.put('/password', validateToken, userController.updatePassword)
 userRouter.put('/email', validateToken, userController.updateEmail)
 userRouter.put('/username', validateToken, userController.updateUsername)
 userRouter.put('/name', validateToken, userController.updateName)
+userRouter.put('/phone-number', validateToken, userController.updatePhoneNumber)
+userRouter.put('/whatsapp', validateToken, userController.updateWhatsappProfileLink)
+userRouter.put('/facebook', validateToken, userController.updateFacebookProfileLink)
+userRouter.put('/twitter', validateToken, userController.updateTwitterProfileLink)
+
 
 userRouter.post('/login', handleLoginErrors, userController.login)
 userRouter.post('/register', userController.register)

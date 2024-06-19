@@ -7,6 +7,7 @@ const userSchema = new mongoose.Schema({
     },
     username: {
         type: String,
+        unique: true,
         required: true
     },
     password: {
@@ -15,7 +16,16 @@ const userSchema = new mongoose.Schema({
     },
     email: {
         type: String,
+        unique: true,
         required: true
+    },
+    //Whatsapp contains the user's whatsapp prof link
+    contact: {
+        phoneNumber: String,
+        whatsapp: String,
+        facebook: String,
+        instagram: String,
+        twitter: String
     },
     rating: Number,
     isActive: Boolean,
