@@ -1,5 +1,7 @@
 import { uploadImage } from '../util/cloudinary.js'
 import { createPostData } from '../helpers/postHelpers.js'
+import Post from '../model/post.model.js'
+
 
 /**
  * @param {import('express').Request} req
@@ -21,7 +23,17 @@ export async function newPost(req, res) {
         }
         const savedPost = await post.save()
         res.json({ "OK": "Post saved", "post": savedPost })
-    } catch(err) {
+    } catch (err) {
+        res.status(400).json(err.message)
+    }
+}
+
+export async function deletePost(req, res) {
+    const { postId } = req.params
+    try {
+        const deletedPost = await Post.findOneAndDelete({ _id: postId })
+        res.status(200).json({ "OK": "Post deleted", "post": deletedPost })
+    } catch (err) {
         res.status(400).json(err.message)
     }
 }

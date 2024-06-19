@@ -4,6 +4,8 @@ import * as postController from '../controller/post.controller.js'
 
 const postRouter = Router()
 
-postRouter.post('/', validateToken, postController.newPost)
+postRouter.post('/create-post', validateToken, postController.newPost)
+
+postRouter.delete('/delete/:postId', validateToken, postController.deletePost)
 
 export default postRouter
