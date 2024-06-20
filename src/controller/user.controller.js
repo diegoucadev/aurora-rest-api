@@ -5,7 +5,7 @@
 import jwt from 'jsonwebtoken'
 import User from '../model/user.model.js'
 import bcrypt from 'bcrypt'
-import { createTokenPayload } from '../helpers/userHelpers.js'
+import { createTokenPayload, createUser } from '../helpers/userHelpers.js'
 import { 
     EmailAlreadyTakenError, 
     InvalidCredentialsError, 
@@ -40,27 +40,13 @@ export async function login(req, res) {
 }
 
 export async function register(req, res) {
-    const { name, username, password, email } = req.body
-    const { phoneNumber, whatsapp, facebook, twitter } = req.body
+    const { password } = req.body
     //Encrypt the password
     const salt = await bcrypt.genSalt()
     const hashedPassword = await bcrypt.hash(password, salt)
     //Create a user model to save in the database
-    const user = new User({
-        name: name,
-        username: username,
-        password: hashedPassword,
-        email: email,
-        rating: 0,
-        contact: {
-            phoneNumber: phoneNumber,
-            whatsapp: whatsapp,
-            facebook: facebook,
-            twitter: twitter
-        },
-        isActive: true,
-        isAdmin: false
-    })
+    const user = createUser(req.body)
+    user.password = hashedPassword
     try {
         const savedUser = await user.save()
         const tokenPayload = createTokenPayload(savedUser._id, savedUser.username, savedUser.email, savedUser.isAdmin)
