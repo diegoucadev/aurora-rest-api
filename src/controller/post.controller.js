@@ -77,7 +77,8 @@ export async function updatePost(req, res) {
 export async function deletePost(req, res) {
     const { postId } = req.params
     try {
-        const deletedPost = await Post.findOneAndDelete({ _id: postId })
+        const deletedPost = await Post.findOneAndDelete({ _id: postId }, { new: true })
+        await deleteImage(deletedPost.image.publicId)
         res.status(200).json({ ok: "Post deleted", "post": deletedPost })
     } catch (err) {
         res.status(400).json(err.message)
