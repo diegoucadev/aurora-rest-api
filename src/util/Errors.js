@@ -33,10 +33,10 @@ export class AccessDeniedError extends Error {
     }
 }
 
-export class EmailTakenError extends Error {
+export class EmailAlreadyTakenError extends Error {
     constructor(message) {
         super(message)
-        this.name = "EmailTakenError"
+        this.name = "EmailAlreadyTakenError"
     }
 }
 

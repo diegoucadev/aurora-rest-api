@@ -5,26 +5,30 @@
 import jwt from 'jsonwebtoken'
 import User from '../model/user.model.js'
 import bcrypt from 'bcrypt'
-import { EmailTakenError, InvalidCredentialsError, InvalidUsername, UserAlreadyBannedError, UserNotFoundError, userNotBannedError } from '../util/Errors.js'
+import { createTokenPayload } from '../helpers/userHelpers.js'
+import { 
+    EmailAlreadyTakenError, 
+    InvalidCredentialsError, 
+    InvalidUsername, 
+    UserAlreadyBannedError, 
+    UserNotFoundError, 
+    userNotBannedError 
+} from '../util/Errors.js'
 
-export async function login(req, res) {
     /*
     The user from req.body is the user from the database
     it contains a password, the password that is being
     extracted is the password entered by the user that will be
     validated, the user was set on the handleLoginErrors middleware
     */
+
+export async function login(req, res) {
     const { user, password } = req.body
     try {
         const match = await bcrypt.compare(password, user.password)
         if (match) {
-            const userForToken = {
-                _id: user._id,
-                username: user.username,
-                email: user.email,
-                isAdmin: user.isAdmin
-            }
-            const accessToken = jwt.sign(userForToken, process.env.ACCESS_TOKEN_SECRET)
+            const tokenPayload = createTokenPayload(user._id, user.username, user.email, user.isAdmin)
+            const accessToken = jwt.sign(tokenPayload, process.env.ACCESS_TOKEN_SECRET)
             res.status(200).json({ acessToken: accessToken })
         } else {
             //If the password doesn't match, deny the access
@@ -59,15 +63,8 @@ export async function register(req, res) {
     })
     try {
         const savedUser = await user.save()
-        const { _id, username, email, isAdmin } = savedUser
-        //This user object will only be used to create a token
-        const userForToken = {
-            _id: _id,
-            username: username,
-            email: email,
-            isAdmin: isAdmin
-        }
-        const accessToken = jwt.sign(userForToken, process.env.ACCESS_TOKEN_SECRET)
+        const tokenPayload = createTokenPayload(savedUser._id, savedUser.username, savedUser.email, savedUser.isAdmin)
+        const accessToken = jwt.sign(tokenPayload, process.env.ACCESS_TOKEN_SECRET)
         res.status(200).json({ ok: 'User successfully registered', token: accessToken })
     } catch (err) {
         res.status(400).json(err.message)
@@ -122,19 +119,15 @@ export async function updateUsername(req, res) {
     const { username } = req.payload
     const newUsername = req.body.newUsername
     try {
+        //Check is the username is already in use
         const isUsernameTaken = await User.findOne({ username: newUsername })
         if (isUsernameTaken) {
             throw new InvalidUsername("The username is already taken")
         }
         const updatedUser = await User.findOneAndUpdate({ username }, { username: newUsername }, { new: true })
-        const userForToken = {
-            _id: updatedUser._id,
-            username: updatedUser.username,
-            email: updatedUser.email,
-            isAdmin: updatedUser.isAdmin
-        }
-
-        const accessToken = jwt.sign(userForToken, process.env.ACCESS_TOKEN_SECRET);
+        //Generate a new access token 
+        const tokenPayload = createTokenPayload(updatedUser._id, updatedUser.username, updatedUser.email, updatedUser.isAdmin)
+        const accessToken = jwt.sign(tokenPayload, process.env.ACCESS_TOKEN_SECRET);
         res.status(200).json({
             ok: 'Username updated',
             newAccessToken: accessToken
@@ -148,18 +141,15 @@ export async function updateEmail(req, res) {
     const { username } = req.payload
     const { newEmail } = req.body
     try {
+        //Check if the email is already in use
         const isEmailTaken = await User.findOne({ email: newEmail })
         if (isEmailTaken) {
-            throw new EmailTakenError("The email is already taken")
+            throw new EmailAlreadyTakenError("The email is already taken")
         }
         const updatedUser = await User.findOneAndUpdate({ username }, { email: newEmail }, { new: true })
-        const userForToken = {
-            _id: updatedUser._id,
-            username: updatedUser.username,
-            email: updatedUser.email,
-            isAdmin: updatedUser.isAdmin
-        }
-        const accessToken = jwt.sign(userForToken, process.env.ACCESS_TOKEN_SECRET);
+        //Generate a new access token
+        const tokenPayload = createTokenPayload(updatedUser._id, updatedUser.username, updatedUser.email, updatedUser.isAdmin)
+        const accessToken = jwt.sign(tokenPayload, process.env.ACCESS_TOKEN_SECRET);
         res.status(200).json({
             ok: 'Email updated',
             newAccessToken: accessToken
