@@ -27,6 +27,25 @@ export async function newPost(req, res) {
     }
 }
 
+export async function getAllPosts(req, res) {
+    try {
+        const allPosts = await Post.find()
+        res.status(200).json(allPosts)
+    } catch (err) {
+        res.status(400).json(err.message)
+    }
+}
+
+export async function getAllUserPosts(req, res) {
+    const { _id } = req.payload
+    try {
+        const userPosts = await Post.find({ publishedBy: _id })
+        res.status(200).json(userPosts)
+    } catch(err) {
+        res.status(400).json(err.message)
+    }
+}
+
 export async function deletePost(req, res) {
     const { postId } = req.params
     try {

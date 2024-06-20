@@ -23,6 +23,6 @@ userRouter.post('/login', handleLoginErrors, userController.login)
 userRouter.post('/register', userController.register)
 userRouter.post('/ban/:username', validateToken, authorizeAdmin, userController.banUser)
 userRouter.post('/unban/:username', validateToken, authorizeAdmin, userController.unbanUser)
-userRouter.post('/delete/:username', validateToken, userController.deleteUser)
+userRouter.delete('/delete/:username', validateToken, userController.deleteUser)
 
 export default userRouter

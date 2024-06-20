@@ -13,3 +13,7 @@ export async function uploadImage(filePath) {
         folder: 'aurora'
     })
 }
+
+export async function deleteImage(publicId) {
+    return await cloudinary.uploader.destroy(publicId)
+}
