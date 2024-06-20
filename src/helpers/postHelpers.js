@@ -26,7 +26,7 @@ export function createPostData(userId, body) {
 }
 
 
-export async function updatePostData(body) {
+export async function updatePostData(post, body) {
     const bookDetails = {
         title: body.title,
         author: body.author,
@@ -39,5 +39,10 @@ export async function updatePostData(body) {
         publisher: body.publisher,
         language: body.language,
         price: body.price
+    
     }
+    
+    post.datePublished = body.datePublished
+    post.book = bookDetails
+    post.transactionType = body.transactionType
 }

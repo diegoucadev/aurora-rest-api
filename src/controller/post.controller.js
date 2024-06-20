@@ -1,5 +1,5 @@
-import { uploadImage } from '../util/cloudinary.js'
-import { createPostData } from '../helpers/postHelpers.js'
+import { uploadImage, deleteImage } from '../util/cloudinary.js'
+import { createPostData, updatePostData } from '../helpers/postHelpers.js'
 import Post from '../model/post.model.js'
 import fs from 'fs-extra'
 
@@ -43,6 +43,32 @@ export async function getAllUserPosts(req, res) {
     try {
         const userPosts = await Post.find({ publishedBy: _id })
         res.status(200).json(userPosts)
+    } catch(err) {
+        res.status(400).json(err.message)
+    }
+}
+
+export async function updatePost(req, res) {
+    const { postId } = req.params
+    const { _id } = req.payload
+
+    try {
+        const post = await Post.findOne({ _id: postId, publishedBy: _id })
+        if (!post) {
+            res.status(400).json({error: "Post not found or unauthorized to edit this post"})
+        }
+        updatePostData(post, req.body)
+        if (req.files?.image) {
+            await deleteImage(post.image.publicId)
+            const upload = await uploadImage(req.files.image.tempFilePath)
+            post.image = {
+                publicId: upload.publicId,
+                url: upload.secure_url
+            }
+            fs.unlink(req.files.image.tempFilePath)
+        }
+        const updatedPost = await post.save()
+        res.status(200).json({ok: updatedPost})
     } catch(err) {
         res.status(400).json(err.message)
     }

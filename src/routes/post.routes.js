@@ -9,6 +9,8 @@ postRouter.get('/my-posts', validateToken, postController.getAllUserPosts)
 
 postRouter.post('/create-post', validateToken, postController.newPost)
 
+postRouter.put('/update-post/:postId', validateToken, postController.updatePost)
+
 postRouter.delete('/delete/:postId', validateToken, postController.deletePost)
 
 export default postRouter
