@@ -24,3 +24,20 @@ export function createPostData(userId, body) {
 
     return post
 }
+
+
+export async function updatePostData(body) {
+    const bookDetails = {
+        title: body.title,
+        author: body.author,
+        condition: body.condition,
+        synopsis: body.synopsis,
+        genre: body.genre,
+        yearPublished: body.yearPublished,
+        pages: body.pages,
+        isbn: body.isbn,
+        publisher: body.publisher,
+        language: body.language,
+        price: body.price
+    }
+}

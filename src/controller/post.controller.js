@@ -1,6 +1,7 @@
 import { uploadImage } from '../util/cloudinary.js'
 import { createPostData } from '../helpers/postHelpers.js'
 import Post from '../model/post.model.js'
+import fs from 'fs-extra'
 
 /**
  * @param {import('express').Request} req
@@ -19,6 +20,7 @@ export async function newPost(req, res) {
                 publicId: upload.public_id,
                 url: upload.secure_url
             }
+            await fs.unlink(req.files.image.tempFilePath)
         }
         const savedPost = await post.save()
         res.json({ "OK": "Post saved", "post": savedPost })
@@ -50,7 +52,7 @@ export async function deletePost(req, res) {
     const { postId } = req.params
     try {
         const deletedPost = await Post.findOneAndDelete({ _id: postId })
-        res.status(200).json({ "OK": "Post deleted", "post": deletedPost })
+        res.status(200).json({ ok: "Post deleted", "post": deletedPost })
     } catch (err) {
         res.status(400).json(err.message)
     }
