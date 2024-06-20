@@ -23,7 +23,7 @@ export async function newPost(req, res) {
             await fs.unlink(req.files.image.tempFilePath)
         }
         const savedPost = await post.save()
-        res.json({ "OK": "Post saved", "post": savedPost })
+        res.json({ ok: 'The post was created successfully', post: savedPost })
     } catch (err) {
         res.status(400).json(err.message)
     }
@@ -55,7 +55,7 @@ export async function updatePost(req, res) {
     try {
         const post = await Post.findOne({ _id: postId, publishedBy: _id })
         if (!post) {
-            res.status(400).json({error: "Post not found or unauthorized to edit this post"})
+            res.status(400).json({error: 'Post not found or unauthorized to edit'})
         }
         updatePostData(post, req.body)
         if (req.files?.image) {
@@ -79,7 +79,7 @@ export async function deletePost(req, res) {
     try {
         const deletedPost = await Post.findOneAndDelete({ _id: postId }, { new: true })
         await deleteImage(deletedPost.image.publicId)
-        res.status(200).json({ ok: "Post deleted", "post": deletedPost })
+        res.status(200).json({ ok: 'The post was deleted successfully', post: deletedPost })
     } catch (err) {
         res.status(400).json(err.message)
     }
