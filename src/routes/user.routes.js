@@ -3,6 +3,7 @@ import * as userController from '../controller/user.controller.js'
 import { validateToken } from '../middleware/validateToken.js'
 import { authorizeAdmin } from '../middleware/authorizeAdmin.js'
 import { handleLoginErrors } from '../middleware/handleLoginErrors.js'
+import { handleRegisterErrors } from "../middleware/handleRegisterErrors.js"
 
 const userRouter = Router()
 
@@ -20,7 +21,7 @@ userRouter.put('/twitter', validateToken, userController.updateTwitterProfileLin
 
 
 userRouter.post('/login', handleLoginErrors, userController.login)
-userRouter.post('/register', userController.register)
+userRouter.post('/register', handleRegisterErrors, userController.register)
 userRouter.post('/ban/:username', validateToken, authorizeAdmin, userController.banUser)
 userRouter.post('/unban/:username', validateToken, authorizeAdmin, userController.unbanUser)
 userRouter.delete('/delete/:username', validateToken, userController.deleteUser)

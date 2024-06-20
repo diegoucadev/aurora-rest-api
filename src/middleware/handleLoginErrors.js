@@ -11,7 +11,7 @@ export async function handleLoginErrors(req, res, next) {
     try {
         const user = await User.findOne({ username })
         //If the user is not on the database, throw an error
-        if (user == null) {
+        if (!user) {
             //Return an error if no matches are found
             throw new UserNotFoundError("Usuario no registrado")
         }
