@@ -31,7 +31,7 @@ export async function newPost(req, res) {
 
 export async function getAllPosts(req, res) {
     try {
-        const allPosts = await Post.find()
+        const allPosts = await Post.paginate()
         res.status(200).json(allPosts)
     } catch (err) {
         res.status(400).json(err.message)
