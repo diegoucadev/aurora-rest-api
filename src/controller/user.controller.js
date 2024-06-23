@@ -29,7 +29,7 @@ export async function login(req, res) {
         if (match) {
             const tokenPayload = createTokenPayload(user._id, user.username, user.email, user.isAdmin)
             const accessToken = jwt.sign(tokenPayload, process.env.ACCESS_TOKEN_SECRET)
-            res.status(200).json({ acessToken: accessToken })
+            res.status(200).json({ accessToken: accessToken })
         } else {
             //If the password doesn't match, deny the access
             throw new InvalidCredentialsError("Invalid login credentials")
@@ -51,7 +51,7 @@ export async function register(req, res) {
         const savedUser = await user.save()
         const tokenPayload = createTokenPayload(savedUser._id, savedUser.username, savedUser.email, savedUser.isAdmin)
         const accessToken = jwt.sign(tokenPayload, process.env.ACCESS_TOKEN_SECRET)
-        res.status(200).json({ ok: 'User successfully registered', token: accessToken })
+        res.status(200).json({ ok: 'User successfully registered', accessToken: accessToken })
     } catch (err) {
         res.status(400).json(err.message)
     }
@@ -116,7 +116,7 @@ export async function updateUsername(req, res) {
         const accessToken = jwt.sign(tokenPayload, process.env.ACCESS_TOKEN_SECRET);
         res.status(200).json({
             ok: 'Username updated',
-            newAccessToken: accessToken
+            accessToken: accessToken
         })
     } catch (err) {
         res.status(400).json(err.message)
@@ -138,7 +138,7 @@ export async function updateEmail(req, res) {
         const accessToken = jwt.sign(tokenPayload, process.env.ACCESS_TOKEN_SECRET);
         res.status(200).json({
             ok: 'Email updated',
-            newAccessToken: accessToken
+            accessToken: accessToken
         })
     } catch (err) {
         res.status(400).json(err.message)
