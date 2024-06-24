@@ -12,8 +12,8 @@ app.use(fileUpload({
     useTempFiles: true,
     tempFileDir: './uploads' 
 }))
-app.use('/users', userRouter)
-app.use('/posts', postRouter)
+app.use('/api/users', userRouter)
+app.use('/api/posts', postRouter)
 
 app.listen(3000)
 

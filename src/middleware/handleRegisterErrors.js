@@ -1,4 +1,4 @@
-import { EmailAlreadyTakenError, InvalidUsername } from '../util/Errors';
+import { EmailAlreadyTakenError, InvalidUsername } from '../util/Errors.js';
 import User from '../model/user.model.js'
 
 /**
