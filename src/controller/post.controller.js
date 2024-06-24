@@ -23,9 +23,9 @@ export async function newPost(req, res) {
             await fs.unlink(req.files.image.tempFilePath)
         }
         const savedPost = await post.save()
-        res.json({ ok: 'The post was created successfully', post: savedPost })
+        res.json({ success: 'The post was created successfully', post: savedPost })
     } catch (err) {
-        res.status(400).json(err.message)
+        res.status(400).json({ error: err.message })
     }
 }
 
@@ -34,7 +34,7 @@ export async function getAllPosts(req, res) {
         const allPosts = await Post.paginate()
         res.status(200).json(allPosts)
     } catch (err) {
-        res.status(400).json(err.message)
+        res.status(400).json({ error: err.message })
     }
 }
 
@@ -43,8 +43,8 @@ export async function getAllUserPosts(req, res) {
     try {
         const userPosts = await Post.find({ publishedBy: _id })
         res.status(200).json(userPosts)
-    } catch(err) {
-        res.status(400).json(err.message)
+    } catch (err) {
+        res.status(400).json({ error: err.message })
     }
 }
 
@@ -55,7 +55,7 @@ export async function updatePost(req, res) {
     try {
         const post = await Post.findOne({ _id: postId, publishedBy: _id })
         if (!post) {
-            res.status(400).json({error: 'Post not found or unauthorized to edit'})
+            res.status(400).json({ error: 'Post not found or unauthorized to edit' })
         }
         updatePostData(post, req.body)
         if (req.files?.image) {
@@ -68,9 +68,9 @@ export async function updatePost(req, res) {
             fs.unlink(req.files.image.tempFilePath)
         }
         const updatedPost = await post.save()
-        res.status(200).json({ok: updatedPost})
-    } catch(err) {
-        res.status(400).json(err.message)
+        res.status(200).json({ success: updatedPost })
+    } catch (err) {
+        res.status(400).json({ error: err.message })
     }
 }
 
@@ -79,8 +79,8 @@ export async function deletePost(req, res) {
     try {
         const deletedPost = await Post.findOneAndDelete({ _id: postId }, { new: true })
         await deleteImage(deletedPost.image.publicId)
-        res.status(200).json({ ok: 'The post was deleted successfully', post: deletedPost })
+        res.status(200).json({ success: 'The post was deleted successfully', post: deletedPost })
     } catch (err) {
-        res.status(400).json(err.message)
+        res.status(400).json({ error: err.message })
     }
 }
