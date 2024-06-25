@@ -23,7 +23,7 @@ export async function newPost(req, res) {
             await fs.unlink(req.files.image.tempFilePath)
         }
         const savedPost = await post.save()
-        res.json({ success: 'The post was created successfully', post: savedPost })
+        res.json({ success: 'Post creado exitosamente', post: savedPost })
     } catch (err) {
         res.status(400).json({ error: err.message })
     }
@@ -79,7 +79,7 @@ export async function deletePost(req, res) {
     try {
         const deletedPost = await Post.findOneAndDelete({ _id: postId }, { new: true })
         await deleteImage(deletedPost.image.publicId)
-        res.status(200).json({ success: 'The post was deleted successfully', post: deletedPost })
+        res.status(200).json({ success: 'Post borrado correctamente', post: deletedPost })
     } catch (err) {
         res.status(400).json({ error: err.message })
     }

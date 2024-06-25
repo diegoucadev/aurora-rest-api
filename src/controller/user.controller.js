@@ -51,7 +51,7 @@ export async function register(req, res) {
         const savedUser = await user.save()
         const tokenPayload = createTokenPayload(savedUser._id, savedUser.username, savedUser.email, savedUser.isAdmin)
         const accessToken = jwt.sign(tokenPayload, process.env.ACCESS_TOKEN_SECRET)
-        res.status(200).json({ success: 'User successfully registered', accessToken: accessToken })
+        res.status(200).json({ success: 'Usuario registrado Exitosamente', accessToken: accessToken })
     } catch (err) {
         res.status(400).json({ error: err.message })
     }
@@ -105,7 +105,7 @@ export async function updatePassword(req, res) {
             const salt = await bcrypt.genSalt()
             const hashedPassword = await bcrypt.hash(newPassword, salt)
             await User.findOneAndUpdate({ username }, { password: hashedPassword })
-            res.status(200).json({ success: 'Password successfully updated' })
+            res.status(200).json({ success: 'Contraseña cambiada exitosamente' })
         } else {
             throw new InvalidCredentialsError("Passwords don't match")
         }
@@ -163,7 +163,7 @@ export async function updateName(req, res) {
     const { newName } = req.body
     try {
         await User.findOneAndUpdate({ username }, { name: newName })
-        res.status(200).json({ success: 'Name updated' })
+        res.status(200).json({ success: 'Nombre actualizado exitosamente' })
     } catch (err) {
         res.status(500).json({ error: err.message })
     }
@@ -177,7 +177,7 @@ export async function banUser(req, res) {
             throw new UserAlreadyBannedError("The user is already banned")
         }
         await User.findOneAndUpdate({ username }, { isActive: false })
-        res.status(200).json({ success: 'User banned' })
+        res.status(200).json({ success: 'Usuario Baneado Exitosamente' })
     } catch (err) {
         res.status(400).json({ error: err.message })
     }
@@ -191,7 +191,7 @@ export async function updatePhoneNumber(req, res) {
             { username },
             { $set: { 'contact.phoneNumber': phoneNumber } }
         )
-        res.status(200).json({ success: 'Phone number updated' })
+        res.status(200).json({ success: 'Telefono actualizado exitosamente' })
     } catch (err) {
         res.status(500).json({ error: err.message })
     }
@@ -205,7 +205,7 @@ export async function updateWhatsappProfileLink(req, res) {
             { username },
             { $set: { 'contact.whatsapp': whatsapp } }
         )
-        res.status(200).json({ success: 'Whatsapp profile link updated' })
+        res.status(200).json({ success: 'Whatsapp Actualizado exitosamente' })
     } catch (err) {
         res.status(500).json({ error: err.message })
     }
@@ -219,7 +219,7 @@ export async function updateFacebookProfileLink(req, res) {
             { username },
             { $set: { 'contact.facebook': facebook } }
         )
-        res.status(200).json({ success: 'Facebook profile link updated' })
+        res.status(200).json({ success: 'Link de facebook actualizado' })
     } catch (err) {
         res.status(500).json({ error: err.message })
     }
@@ -233,7 +233,7 @@ export async function updateTwitterProfileLink(req, res) {
             { username },
             { $set: { 'contact.twitter': twitter } }
         )
-        res.status(200).json({ success: 'Twitter profile link updated' })
+        res.status(200).json({ success: 'Link de twitter Actualizado' })
     } catch (err) {
         res.status(500).json({ error: err.message })
     }
@@ -247,7 +247,7 @@ export async function unbanUser(req, res) {
             throw new userNotBannedError("The user is not banned")
         }
         await User.findOneAndUpdate({ username }, { isActive: true })
-        res.status(200).json({ success: 'User unbanned' })
+        res.status(200).json({ success: 'Usuario desbloqueado' })
     } catch (err) {
         res.status(400).json({ error: err.message })
     }
@@ -261,7 +261,7 @@ export async function deleteUser(req, res) {
             throw new UserNotFoundError("User not found")
         }
         await User.findOneAndDelete({ username })
-        res.status(200).json({ success: 'User deleted' })
+        res.status(200).json({ success: 'Usuario borrado correctamente' })
     } catch (err) {
         res.status(400).json({ error: err.message })
     }
