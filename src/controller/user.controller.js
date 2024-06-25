@@ -71,7 +71,7 @@ export async function getUserByUsername(req, res) {
         const { username } = req.params
         const user = await User.findOne({ username })
         if (user == null) {
-            throw new InvalidUsername("No user with that username was found")
+            throw new InvalidUsername("No se ha encontrado a un usuario con ese nombre")
         }
         res.status(200).json(user)
     } catch (err) {
@@ -98,7 +98,7 @@ export async function updatePassword(req, res) {
     try {
         const user = await User.findOne({ username })
         if (user == null) {
-            throw new UserNotFoundError("User not found")
+            throw new UserNotFoundError("Usuario no encontrado")
         }
         const match = bcrypt.compare(currentPassword, user.password)
         if (match) {
@@ -107,7 +107,7 @@ export async function updatePassword(req, res) {
             await User.findOneAndUpdate({ username }, { password: hashedPassword })
             res.status(200).json({ success: 'Contraseña cambiada exitosamente' })
         } else {
-            throw new InvalidCredentialsError("Passwords don't match")
+            throw new InvalidCredentialsError("Las claves de acceso no coinciden")
         }
     } catch (err) {
         res.status(400).json({ error: err.message })
@@ -121,7 +121,7 @@ export async function updateUsername(req, res) {
         //Check is the username is already in use
         const isUsernameTaken = await User.findOne({ username: newUsername })
         if (isUsernameTaken) {
-            throw new InvalidUsername("The username is already taken")
+            throw new InvalidUsername("El nombre de usuario esta tomado")
         }
         const updatedUser = await User.findOneAndUpdate({ username }, { username: newUsername }, { new: true })
         //Generate a new access token 
@@ -143,7 +143,7 @@ export async function updateEmail(req, res) {
         //Check if the email is already in use
         const isEmailTaken = await User.findOne({ email: newEmail })
         if (isEmailTaken) {
-            throw new EmailAlreadyTakenError("The email is already taken")
+            throw new EmailAlreadyTakenError("El email esta ocupado")
         }
         const updatedUser = await User.findOneAndUpdate({ username }, { email: newEmail }, { new: true })
         //Generate a new access token
@@ -174,7 +174,7 @@ export async function banUser(req, res) {
     try {
         const user = await User.find({ username })
         if (!user.isActive) {
-            throw new UserAlreadyBannedError("The user is already banned")
+            throw new UserAlreadyBannedError("El usuario ya esta baneado")
         }
         await User.findOneAndUpdate({ username }, { isActive: false })
         res.status(200).json({ success: 'Usuario Baneado Exitosamente' })
@@ -244,7 +244,7 @@ export async function unbanUser(req, res) {
     try {
         const user = await User.findOne({ username })
         if (user.isActive) {
-            throw new userNotBannedError("The user is not banned")
+            throw new userNotBannedError("El usuario no esta baneado")
         }
         await User.findOneAndUpdate({ username }, { isActive: true })
         res.status(200).json({ success: 'Usuario desbloqueado' })
@@ -258,7 +258,7 @@ export async function deleteUser(req, res) {
     try {
         const user = await User.findOne({ username })
         if (!user) {
-            throw new UserNotFoundError("User not found")
+            throw new UserNotFoundError("Usuario no encontrado")
         }
         await User.findOneAndDelete({ username })
         res.status(200).json({ success: 'Usuario borrado correctamente' })

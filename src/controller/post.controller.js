@@ -55,7 +55,7 @@ export async function updatePost(req, res) {
     try {
         const post = await Post.findOne({ _id: postId, publishedBy: _id })
         if (!post) {
-            res.status(400).json({ error: 'Post not found or unauthorized to edit' })
+            res.status(400).json({ error: 'Post no encontrado o no autorizado para editar' })
         }
         updatePostData(post, req.body)
         if (req.files?.image) {
