@@ -1,6 +1,6 @@
 import mongoose from "mongoose"
 import bookSchema from "./book.model.js"
-import paginate from 'mongoose-paginate-v2'
+//import paginate from 'mongoose-paginate-v2'
 
 const postSchema = new mongoose.Schema({
     datePublished: String, 
@@ -24,5 +24,5 @@ const postSchema = new mongoose.Schema({
 
 })
 
-postSchema.plugin(paginate)
+//postSchema.plugin(paginate)
 export default mongoose.model('Post', postSchema)
