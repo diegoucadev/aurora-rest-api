@@ -8,6 +8,7 @@ import { handleRegisterErrors } from "../middleware/handleRegisterErrors.js"
 const userRouter = Router()
 
 userRouter.get('/', validateToken, authorizeAdmin, userController.getAllUsers)
+userRouter.get('/my-profile', validateToken, userController.getUserWithToken)
 userRouter.get('/:username', validateToken, authorizeAdmin, userController.getUserByUsername)
 
 userRouter.put('/password', validateToken, userController.updatePassword)
@@ -24,6 +25,7 @@ userRouter.post('/login', handleLoginErrors, userController.login)
 userRouter.post('/register', handleRegisterErrors, userController.register)
 userRouter.post('/ban/:username', validateToken, authorizeAdmin, userController.banUser)
 userRouter.post('/unban/:username', validateToken, authorizeAdmin, userController.unbanUser)
+
 userRouter.delete('/delete/:username', validateToken, userController.deleteUser)
 
 export default userRouter

@@ -32,7 +32,7 @@ export async function login(req, res) {
             res.status(200).json({ accessToken: accessToken })
         } else {
             //If the password doesn't match, deny the access
-            throw new InvalidCredentialsError("Invalid login credentials")
+            throw new InvalidCredentialsError("Usuario o contrasena invalidos")
         }
     } catch (err) {
         res.status(400).json({ error: err.message })
@@ -76,6 +76,19 @@ export async function getUserByUsername(req, res) {
         res.status(200).json(user)
     } catch (err) {
         res.status(400).json({ error: err.message })
+    }
+}
+
+export async function getUserWithToken(req, res) {
+    try {
+        const { username } = req.payload
+        const user = await User.findOne({ username })
+        if (!user) {
+            throw new InvalidUsername("Usuario no encontrado")
+        } 
+        res.status(200).json({ success: user })
+    } catch(err) {
+        res.json(400).json({ error: err.message })
     }
 }
 
