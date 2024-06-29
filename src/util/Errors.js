@@ -54,9 +54,9 @@ export class userNotBannedError extends Error {
     }
 }
 
-export class postNotFoundError extends Error {
+export class PostNotFoundError extends Error {
     constructor(message) {
         super(message)
-        this.name = "userNotBannedError"
+        this.name = "postNotFoundError"
     }
 }

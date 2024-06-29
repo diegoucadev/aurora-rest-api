@@ -2,6 +2,7 @@ import { uploadImage, deleteImage } from '../util/cloudinary.js'
 import { createPostData, updatePostData } from '../helpers/postHelpers.js'
 import Post from '../model/post.model.js'
 import fs from 'fs-extra'
+import { PostNotFoundError } from '../util/Errors.js'
 
 /**
  * @param {import('express').Request} req
@@ -44,6 +45,19 @@ export async function getAllUserPosts(req, res) {
         const userPosts = await Post.find({ publishedBy: _id })
         res.status(200).json(userPosts)
     } catch (err) {
+        res.status(400).json({ error: err.message })
+    }
+}
+
+export async function getPostById(req, res) {
+    const { postId } = req.params
+    try {
+        const post = await Post.findById(postId)
+        if(!post) {
+            throw new PostNotFoundError("No existe ningun post con esa ID")
+        }
+        res.status(200).json({ post: post })
+    } catch(err) {
         res.status(400).json({ error: err.message })
     }
 }

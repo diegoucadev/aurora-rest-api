@@ -6,6 +6,7 @@ const postRouter = Router()
 
 postRouter.get('/', validateToken, postController.getAllPosts)
 postRouter.get('/my-posts', validateToken, postController.getAllUserPosts)
+postRouter.get('/:postId', validateToken, postController.getPostById)
 
 postRouter.post('/create-post', validateToken, postController.newPost)
 
